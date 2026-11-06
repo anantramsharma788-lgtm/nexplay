@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXPLAY | My Progress</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090b20;color:#f5f3ff;font-family:Arial,sans-serif}
+header{padding:25px 7%;background:#111431;border-bottom:1px solid #292b50}
+header a{color:#b9a5ff;text-decoration:none}
+main{max-width:1100px;margin:35px auto;padding:0 20px}
+h1{font-size:30px;margin-bottom:8px}
+.sub{color:#a5a8c8;margin-bottom:28px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.card{background:#141735;border:1px solid #292d57;border-radius:16px;padding:22px;margin-bottom:18px}
+.label{color:#aeb1d1;font-size:14px}
+.number{font-size:30px;font-weight:bold;margin:12px 0;color:#c8b5ff}
+.bar{height:10px;background:#292d50;border-radius:20px;overflow:hidden;margin-top:12px}
+.fill{height:100%;width:0;background:linear-gradient(90deg,#8065ff,#d46bff);border-radius:20px;transition:.3s}
+input,button{padding:12px;border-radius:9px;border:1px solid #41456e;font-size:15px}
+input{background:#0d1029;color:white;max-width:100%;width:100%;margin:7px 0}
+button{background:#7659ed;color:white;border:0;cursor:pointer;margin-top:8px}
+button:hover{background:#947cff}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row input{flex:1;min-width:130px}
+ul{padding:0;list-style:none}
+li{padding:12px;margin:9px 0;background:#1c2042;border-radius:9px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+li span{overflow-wrap:anywhere}
+.delete{background:#a43d65;padding:7px 10px;margin:0}
+.note{color:#9da1c3;font-size:13px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="study-planner.html">← Back to Study Planner</a>
+</header>
+
+<main>
+  <h1>📊 My Progress</h1>
+  <p class="sub">Every small step takes you closer to your goals.</p>
+
+  <section class="grid">
+    <div class="card">
+      <div class="label">Completed Chapters</div>
+      <div class="number" id="chapterCount">0</div>
+    </div>
+    <div class="card">
+      <div class="label">Study Hours</div>
+      <div class="number" id="hourCount">0</div>
+    </div>
+    <div class="card">
+      <div class="label">Tasks Completed</div>
+      <div class="number" id="taskCount">0</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>🎯 Overall Progress</h2>
+    <div class="number" id="percent">0%</div>
+    <div class="bar"><div class="fill" id="progressBar"></div></div>
+    <p class="note">Your progress is based on the chapters you mark as completed.</p>
+  </section>
+
+  <section class="card">
+    <h2>📚 Chapter Tracker</h2>
+    <div class="row">
+      <input id="chapterInput" placeholder="Enter chapter name">
+      <button onclick="addChapter()">+ Add Chapter</button>
+    </div>
+    <ul id="chapterList"></ul>
+  </section>
+
+  <section class="card">
+    <h2>⏱️ Add Study Hours</h2>
+    <div class="row">
+      <input id="hoursInput" type="number" min="0.1" max="24" step="0.1" placeholder="Hours studied">
+      <button onclick="addHours()">Save Hours</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>🏆 Achievements</h2>
+    <p id="achievement" class="note">Complete your first chapter to unlock your first achievement!</p>
+  </section>
+
+  <p class="note">Your progress is saved in this browser on this device. It is not synced across devices.</p>
+</main>
+
+<script>
+const KEY="nexplayProgressData";
+let data=JSON.parse(localStorage.getItem(KEY)||'{"chapters":[],"hours":0}');
+
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+}
+
+function addChapter(){
+  const input=document.getElementById("chapterInput");
+  const name=input.value.trim();
+  if(!name){alert("Please enter a chapter name.");return;}
+  data.chapters.push({name,done:false});
+  input.value="";
+  save();
+}
+
+function toggleChapter(index){
+  data.chapters[index].done=!data.chapters[index].done;
+  save();
+}
+
+function removeChapter(index){
+  data.chapters.splice(index,1);
+  save();
+}
+
+function addHours(){
+  const input=document.getElementById("hoursInput");
+  const value=Number(input.value);
+  if(!Number.isFinite(value)||value<=0||value>24){
+    alert("Enter a number of hours between 0 and 24.");
+    return;
+  }
+  data.hours=Number((data.hours+value).toFixed(1));
+  input.value="";
+  save();
+}
+
+function render(){
+  const completed=data.chapters.filter(c=>c.done).length;
+  const total=data.chapters.length;
+  const percent=total?Math.round(completed/total*100):0;
+
+  document.getElementById("chapterCount").textContent=completed;
+  document.getElementById("hourCount").textContent=data.hours;
+  document.getElementById("taskCount").textContent=completed;
+  document.getElementById("percent").textContent=percent+"%";
+  document.getElementById("progressBar").style.width=percent+"%";
+
+  document.getElementById("chapterList").innerHTML="";
+  data.chapters.forEach((chapter,index)=>{
+    const li=document.createElement("li");
+    const label=document.createElement("span");
+    label.textContent=(chapter.done?"✅ ":"⬜ ")+chapter.name;
+    label.style.cursor="pointer";
+    label.onclick=()=>toggleChapter(index);
+
+    const remove=document.createElement("button");
+    remove.textContent="Delete";
+    remove.className="delete";
+    remove.onclick=()=>removeChapter(index);
+
+    li.append(label,remove);
+    document.getElementById("chapterList").appendChild(li);
+  });
+
+  const achievement=document.getElementById("achievement");
+  if(completed>=10) achievement.textContent="🏆 Chapter Champion — 10 chapters completed!";
+  else if(completed>=5) achievement.textContent="⭐ Rising Star — 5 chapters completed!";
+  else if(completed>=1) achievement.textContent="🎉 First Step — You completed a chapter!";
+  else achievement.textContent="Complete your first chapter to unlock your first achievement!";
+}
+
+render();
+</script>
+</body>
+      </html>
