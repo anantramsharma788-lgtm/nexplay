@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXPLAY | Play. Learn. Level Up.</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ padding:20px;
+ font-family:Arial,sans-serif;
+ background:#090b20;
+ color:white;
+}
+.container{max-width:500px;margin:auto}
+h1{color:#ff70d9;text-align:center;font-size:36px}
+.subtitle{text-align:center;color:#c7b5ff}
+.card{
+ background:#191735;
+ padding:22px;
+ border-radius:18px;
+ margin-top:22px;
+}
+label{display:block;margin-top:15px;color:#d8caff}
+input,select{
+ width:100%;padding:13px;margin-top:7px;
+ border:1px solid #65518f;border-radius:10px;
+ background:#292449;color:white;font-size:16px;
+}
+button{
+ width:100%;padding:15px;margin-top:22px;
+ border:0;border-radius:12px;
+ background:#ff65d4;color:#160d29;
+ font-weight:bold;font-size:16px;
+}
+#result{margin-top:20px;line-height:1.6;overflow-wrap:anywhere}
+small{color:#b9afd6}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🌌 NEXPLAY</h1>
+<p class="subtitle">Play. Learn. Level Up.</p>
+
+<div class="card">
+<h2>🔍 AI Syllabus Hunter</h2>
+<p>Tell us what you're studying. NEXPLAY will help find your syllabus.</p>
+
+<label>Country</label>
+<input id="country" value="India">
+
+<label>Education Board</label>
+<select id="board">
+<option>CBSE</option>
+<option>ICSE</option>
+<option>State Board</option>
+<option>IB</option>
+<option>Cambridge</option>
+<option>Other</option>
+</select>
+
+<label>Class</label>
+<select id="grade">
+<option>1</option><option>2</option><option>3</option>
+<option>4</option><option>5</option><option>6</option>
+<option>7</option><option>8</option><option>9</option>
+<option>10</option><option selected>11</option><option>12</option>
+</select>
+
+<label>Academic Year</label>
+<input id="year" value="2026-27">
+
+<label>Subject</label>
+<input id="subject" placeholder="Enter subject">
+
+<button onclick="findSyllabus()">🔍 HUNT MY SYLLABUS</button>
+<div id="result"></div>
+</div>
+
+<p class="subtitle">✨ Your learning universe starts here.</p>
+</div>
+
+<script>
+function findSyllabus(){
+ const country=document.getElementById("country").value;
+ const board=document.getElementById("board").value;
+ const grade=document.getElementById("grade").value;
+ const year=document.getElementById("year").value;
+ const subject=document.getElementById("subject").value;
+
+ if(!subject.trim()){
+  alert("Please enter your subject!");
+  return;
+ }
+
+ const query=encodeURIComponent(
+  `${country} ${board} class ${grade} ${subject} ${year} official syllabus PDF`
+ );
+
+ document.getElementById("result").innerHTML=
+ `<p>🌌 Your syllabus search is ready!</p>
+ <p>Profile: ${board} | Class ${grade} | ${subject} | ${year}</p>
+ <p>Next, connect the NEXPLAY search engine to retrieve and verify official PDFs.</p>
+ <a style="color:#ff85df" target="_blank"
+ href="https://www.google.com/search?q=${query}">
+ Open syllabus search results ↗</a>`;
+}
+</script>
+</body>
+</html>
