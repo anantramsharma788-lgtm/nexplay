@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXPLAY | AI Study Planner</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080b22;color:white;font-family:Arial,sans-serif}
+.sidebar{background:#111333;padding:20px;min-height:100vh;width:210px;position:fixed}
+.logo{font-size:25px;font-weight:bold;color:#bd8aff}
+.sidebar p{padding:13px;border-radius:12px;color:#d8d6ff}
+.sidebar p:first-of-type{background:#4530a0}
+main{margin-left:210px;padding:25px;max-width:1250px}
+.hero,.card{background:#171b43;border:1px solid #34376d;border-radius:20px;padding:22px;margin-bottom:18px}
+.hero{background:linear-gradient(120deg,#28206b,#172d62)}
+h1{font-size:34px;color:#c9a2ff}
+h2{font-size:20px}
+button{background:#8850ff;color:white;border:0;border-radius:12px;padding:12px 18px;font-weight:bold;cursor:pointer}
+input{background:#10132f;border:1px solid #56558e;border-radius:9px;padding:11px;color:white;max-width:100%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.task{padding:12px;border-bottom:1px solid #38395f}
+.task input{accent-color:#a36aff}
+.bar{height:12px;background:#34365e;border-radius:20px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,#a34dff,#36c7ff)}
+.small{color:#b8b6df}
+@media(max-width:650px){
+.sidebar{position:static;width:100%;min-height:auto;padding:12px}
+.sidebar p{display:inline-block;padding:8px;font-size:12px}
+main{margin:0;padding:13px}
+.grid{grid-template-columns:1fr}
+h1{font-size:27px}
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+<div class="logo">✦ NEXPLAY</div>
+<p>🏠 Dashboard</p>
+<p>📅 AI Study Planner</p>
+<p>📊 My Progress</p>
+<p>📝 Notes</p>
+<p>⚙️ Settings</p>
+</aside>
+
+<main>
+<section class="hero">
+<h1>✦ AI Study Planner</h1>
+<p>Your day, organized around your goals.</p>
+<p class="small">Dream big. Study smart. Achieve more.</p>
+<button onclick="generatePlan()">✨ Generate My Plan</button>
+</section>
+
+<div class="grid">
+<section class="card">
+<h2>📊 Weekly Progress</h2>
+<h1 id="percent">0%</h1>
+<div class="bar"><div class="fill" id="fill"></div></div>
+<p class="small" id="count">0 goals completed</p>
+</section>
+
+<section class="card">
+<h2>🎯 Today's Goals</h2>
+<div id="tasks">
+<div class="task"><label><input type="checkbox" onchange="update()"> Complete Maths revision</label></div>
+<div class="task"><label><input type="checkbox" onchange="update()"> Revise Physics</label></div>
+<div class="task"><label><input type="checkbox" onchange="update()"> Study Chemistry</label></div>
+<div class="task"><label><input type="checkbox" onchange="update()"> Practice questions</label></div>
+</div>
+</section>
+
+<section class="card">
+<h2>📅 Your Daily Schedule</h2>
+<p>🌅 6:00 – 7:00 AM | Quick Revision</p>
+<p>📘 3:30 – 5:00 PM | Maths</p>
+<p>⚡ 5:15 – 6:45 PM | Physics</p>
+<p>🧪 7:00 – 9:00 PM | Chemistry</p>
+</section>
+
+<section class="card">
+<h2>🤖 AI Study Tip</h2>
+<p>Try the Pomodoro technique!</p>
+<p class="small">Study for 25 minutes, then take a 5-minute break.</p>
+</section>
+</div>
+
+<section class="card">
+<h2>✨ Add Your Own Goal</h2>
+<input id="newTask" placeholder="Enter a study goal">
+<button onclick="addTask()">+ Add Goal</button>
+</section>
+
+<section class="card">
+<h2>💜 Your Study Motivation</h2>
+<p>Small steps every day lead to big results!</p>
+</section>
+</main>
+
+<script>
+function update(){
+const boxes=document.querySelectorAll('#tasks input[type=checkbox]');
+const done=[...boxes].filter(x=>x.checked).length;
+const percent=boxes.length?Math.round(done/boxes.length*100):0;
+document.getElementById('percent').textContent=percent+'%';
+document.getElementById('fill').style.width=percent+'%';
+document.getElementById('count').textContent=done+' of '+boxes.length+' goals completed';
+}
+function addTask(){
+const input=document.getElementById('newTask');
+if(!input.value.trim())return;
+const div=document.createElement('div');
+div.className='task';
+const label=document.createElement('label');
+const box=document.createElement('input');
+box.type='checkbox';
+box.addEventListener('change',update);
+label.append(box,document.createTextNode(' '+input.value.trim()));
+div.append(label);
+document.getElementById('tasks').append(div);
+input.value='';
+update();
+}
+function generatePlan(){
+alert('Your study planner is ready! Add your goals and tick them as you complete them. 💜');
+}
+update();
+</script>
+</body>
+  </html>
